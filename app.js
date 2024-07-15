@@ -1,18 +1,18 @@
 var express = require("express");
 var mongoose = require("mongoose");
-var bodyParser = require("body-paser");
+var bodyParser = require("body-parser");
 var cors = require("cors");
-
+require("dotenv").config();
 const app = express();
-const port = process.env.PORT || 5000;
+const port = 3000;
 
 app.use(cors());
 app.use(bodyParser.json());
 
 mongoose
   .connect(process.env.MONGODBSTRING, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
+    ssl: true,
+ 
   })
   .then(() => console.log("MongoDB connected"))
   .catch((err) => console.log(err));
@@ -25,7 +25,9 @@ const visitorSchema = new mongoose.Schema({
 });
 
 const Visitor = mongoose.model("Visitor", visitorSchema);
-
+app.get("/", (req, res) => {
+  res.send("Welcome to Nameer's portfolio count server");
+});
 app.get("/api/visitor", async (req, res) => {
   try {
     let visitor = await Visitor.findOne();
